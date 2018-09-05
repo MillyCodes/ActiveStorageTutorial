@@ -99,7 +99,69 @@ One cool thing about this, is that if you go to the index page that might list t
 
 
 ## Demo
+create new app
+`rails new myapp --database=postgresql`
 
+Scaffold for Demo purposes
+`rails g scaffold post title body:text`
+
+---
+
+`rails db:create`
+`rails db:migrate`
+
+---
+
+`rails active_storage:install`
+`rails db:migrate`
+
+creates:
+- active_storage_blobs
+- active_storage_attachments
+
+---
+
+In `app/models/post.rb`, update it as follows:
+
+```ruby
+class Post < ApplicationRecord
+  has_one_attached :file
+end
+```
+
+`:file` can be called anything you prefer, can be application specific (pdf, presentations, image, etc)
+
+---
+
+in `app/views/posts/_form.html.erb`, add an input for the file.
+
+```ruby
+<div class="field">
+  <%= form.label :file %>
+  <%= form.file_field :file %>
+</div>
+```
+---
+
+Whitelist `:file` in `posts_controller.rb`
+```ruby
+def post_params
+  params.require(:post).permit(:title, :body)
+end
+```
+Add:
+```ruby
+def post_params
+  params.require(:post).permit(:title, :body, :file)
+end
+```
+
+
+in the show file add
+```ruby
+<%= link_to 'file', @post.file %>
+<%= link_to 'file', @post.file, download: '' %>
+```
 
 ## Additional Resources
 
